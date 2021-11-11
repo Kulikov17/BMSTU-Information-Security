@@ -75,17 +75,22 @@ class Enigma:
         return encryptMessage
 
 
+def encrypt_file(inputFileName, outputFileName, enigma):
+    with open(inputFileName, 'rb') as f:
+        text = f.read()
+        textFormat = ""
+        for byte in text:
+            textFormat += chr(byte)
+        textEncrypt = enigma.encrypt(textFormat)
+        byteTextEncrypt = b""
+        for s in textEncrypt:
+            byteTextEncrypt += bytes([ord(s)])
+        with open(outputFileName, 'wb') as cf:
+            cf.write(byteTextEncrypt)
+
 enigma = Enigma()
 enigmaOld = copy.deepcopy(enigma)
 
-with open('text.txt', 'r',  encoding='utf-8') as f:
-    text = f.read()
-    print("Исходный текст:\n")
-    print(text)
-    print("\nЗашифрованный текст:\n")
-    with open('text_encrypt.txt', 'w',  encoding='utf-8') as ef:
-        textEncrypt = enigma.encrypt(text)
-        ef.write(textEncrypt)
-        print(textEncrypt)
-        print("\nРасшифрованный текст:\n")
-        print(enigmaOld.encrypt(textEncrypt))
+inputFile = input('Введите полное имя файла: ')
+encrypt_file(inputFile, 'crypted_' + inputFile, enigma)
+encrypt_file('crypted_' + inputFile, 'decrypted_crypted_' + inputFile, enigmaOld)
